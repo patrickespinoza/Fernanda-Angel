@@ -184,7 +184,7 @@ const Celebracion = ({
 
             {hora && (
               <>
-                <div className="mx-auto my-5 h-px w-16 bg-[#78866B]/40" />
+                <div className="mx-auto my-5 h-px w-56 bg-[#78866B]/40" />
 
                 <p
                   className="

@@ -232,13 +232,13 @@ const Regalos = () => {
             <p
               className="
                 font-cursiveDancing
-                text-3xl
+                text-xl
                 text-[#F26F5B]
 
-                sm:text-4xl
+                sm:text-2xl
               "
             >
-              Gracias por acompañarnos
+              Las mejores cosas de la vida merecen ser compartidas. Gracias por ser parte de nuestra historia.
             </p>
           </motion.div>
         </div>

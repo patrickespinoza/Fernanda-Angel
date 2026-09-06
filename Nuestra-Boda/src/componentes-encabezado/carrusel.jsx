@@ -445,33 +445,69 @@ const Carousel = () => {
         </div>
 
         {/* FRASE */}
-        <motion.p
-          initial={{
-            opacity: 0,
-            y: 20,
-          }}
-          whileInView={{
-            opacity: 1,
-            y: 0,
-          }}
-          transition={{
-            duration: 0.8,
-            delay: 0.2,
-          }}
-          viewport={{ once: true }}
-          className="
-            mt-8
-            text-center
-            font-cursiveDancing
-            text-4xl
-            text-[#59664D]
+    <motion.p
+  initial={{
+    opacity: 0,
+    y: 20,
+  }}
+  whileInView={{
+    opacity: 1,
+    y: 0,
+  }}
+  transition={{
+    duration: 0.8,
+    delay: 0.2,
+  }}
+  viewport={{ once: true }}
+  className="
+    mt-8
+    text-center
+    font-cursiveDancing
+    text-4xl
+    text-[#59664D]
 
-            sm:text-5xl
-            md:text-6xl
-          "
-        >
-          Tú y yo en cada eternidad
-        </motion.p>
+    sm:text-5xl
+    md:text-6xl
+  "
+>
+  “Tú y yo en cada eternidad”
+
+  <motion.span
+    initial={{
+      opacity: 0,
+      scale: 0.6,
+    }}
+    whileInView={{
+      opacity: 1,
+      scale: 1,
+    }}
+    animate={{
+      scale: [1, 1.12, 1],
+    }}
+    transition={{
+      opacity: {
+        duration: 0.6,
+        delay: 0.5,
+      },
+      scale: {
+        duration: 1.5,
+        repeat: Infinity,
+        ease: "easeInOut",
+      },
+    }}
+    viewport={{ once: true }}
+    className="
+      mt-5
+      block
+      text-2xl
+      text-black
+
+      sm:text-3xl
+    "
+  >
+    ♡
+  </motion.span>
+</motion.p>
       </motion.div>
     </section>
   );
