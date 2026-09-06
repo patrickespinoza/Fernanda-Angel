@@ -2,17 +2,33 @@ import React from "react";
 
 export default function Portada() {
   return (
-    <section className="relative w-full h-screen overflow-hidden">
+    <section className="relative h-screen w-full overflow-hidden">
 
       {/* FOTO */}
       <img
         src="/portada.jpg"
         alt="Fernanda y Ángel"
-        className="absolute inset-0 w-full h-full object-cover object-[center_35%]"
+        className="
+          absolute
+          inset-0
+          h-full
+          w-full
+          object-cover
+          object-[center_35%]
+        "
       />
 
-      {/* Degradado para mejorar lectura */}
-      <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/15 to-black/30"></div>
+      {/* DEGRADADO PARA MEJORAR LA LECTURA */}
+      <div
+        className="
+          absolute
+          inset-0
+          bg-gradient-to-t
+          from-black/70
+          via-black/10
+          to-black/40
+        "
+      />
 
       {/* CONTENIDO */}
       <div
@@ -24,39 +40,104 @@ export default function Portada() {
           flex-col
           items-center
           justify-between
-          px-6
+          px-5
           pb-3
-          pt-3
           text-center
 
+          sm:px-8
           sm:pb-3
-          sm:pt-3
 
           md:pb-3
-          md:pt-3
         "
       >
-        {/* NOMBRES EN LA PARTE SUPERIOR */}
-        <h1
+        {/* NOMBRES */}
+        <div
           className="
-            font-cursiveDancing
-            text-5xl
-            leading-none
-            text-white
-            drop-shadow-2xl
+            mt-[11vh]
+            flex
+            w-full
+            max-w-6xl
+            flex-col
+            items-center
+            justify-center
 
-            sm:text-7xl
-            md:text-8xl
-            lg:text-[7rem]
+            sm:mt-[12vh]
+            md:mt-[13vh]
+            md:flex-row
+            md:gap-5
+
+            lg:mt-[14vh]
           "
         >
-          Fernanda & Ángel
-        </h1>
+          <span
+            className="
+              font-playfair
+              text-[2.9rem]
+              font-medium
+              leading-none
+              tracking-[0.04em]
+              text-white
+              drop-shadow-[0_4px_16px_rgba(0,0,0,0.85)]
+
+              sm:text-6xl
+
+              md:text-7xl
+              md:tracking-[0.02em]
+
+              lg:text-[5.8rem]
+            "
+          >
+            Fernanda
+          </span>
+
+          <span
+            className="
+              my-2
+              font-playfair
+              text-3xl
+              font-light
+              italic
+              leading-none
+              text-white/90
+              drop-shadow-[0_3px_12px_rgba(0,0,0,0.8)]
+
+              sm:text-4xl
+
+              md:my-0
+              md:text-5xl
+
+              lg:text-6xl
+            "
+          >
+            &
+          </span>
+
+          <span
+            className="
+              font-playfair
+              text-[2.9rem]
+              font-medium
+              leading-none
+              tracking-[0.04em]
+              text-white
+              drop-shadow-[0_4px_16px_rgba(0,0,0,0.85)]
+
+              sm:text-6xl
+
+              md:text-7xl
+              md:tracking-[0.02em]
+
+              lg:text-[5.8rem]
+            "
+          >
+            Ángel
+          </span>
+        </div>
 
         {/* FECHA EN LA PARTE INFERIOR */}
         <div className="flex items-center justify-center gap-5 text-white sm:gap-7">
 
-          <div className="h-px w-10 bg-white/70 sm:w-16"></div>
+          <div className="h-px w-10 bg-white/70 sm:w-16" />
 
           <div className="flex flex-col items-center font-playfair">
             <span className="text-3xl leading-none sm:text-4xl">
@@ -72,7 +153,7 @@ export default function Portada() {
             </span>
           </div>
 
-          <div className="h-px w-10 bg-white/70 sm:w-16"></div>
+          <div className="h-px w-10 bg-white/70 sm:w-16" />
 
         </div>
       </div>
