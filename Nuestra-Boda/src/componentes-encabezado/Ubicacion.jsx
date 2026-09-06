@@ -338,7 +338,7 @@ const Celebracion = ({
 
             -bottom-5
             -left-12
-            w-[350px]
+            w-[250px]
 
             sm:-bottom-14
             sm:-left-12
@@ -384,7 +384,7 @@ const Celebracion = ({
 
             -bottom-12
             -right-5
-            w-[300px]
+            w-[200px]
 
             sm:-bottom-14
             sm:-right-12

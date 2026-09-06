@@ -8,240 +8,549 @@ const Confirmacion = () => {
   const [invitados, setInvitados] = useState("");
   const [error, setError] = useState("");
   const [enviando, setEnviando] = useState(false);
+  const [ladoEnviando, setLadoEnviando] = useState("");
   const [enviado, setEnviado] = useState(false);
 
-  const enviarConfirmacion = async () => {
-    if (!nombreInvitado.trim() || !asistencia) {
-      setError("Completa tu nombre y confirma tu asistencia.");
+  /*
+    Coloca los números con código de país,
+    sin el signo +, espacios ni guiones.
+
+    Ejemplo México:
+    526311234567
+  */
+  const WHATSAPP_NOVIA = "526861065126";
+  const WHATSAPP_NOVIO = "529711491501";
+
+  const SCRIPT_URL =
+    "https://script.google.com/macros/s/AKfycbzjOoyhLq4AcRCmWtKpuFDPplxPn-E-A2AOTPJP9JwgPl-OhSgJbVSuX3bD5enYKbHm/exec";
+
+  const enviarConfirmacion = async (lado) => {
+    if (enviando) return;
+
+    if (!nombreInvitado.trim()) {
+      setError("Ingresa tu nombre y apellido.");
+      return;
+    }
+
+    if (!asistencia) {
+      setError("Selecciona si asistirás al evento.");
+      return;
+    }
+
+    if (
+      asistencia === "Sí asistiré" &&
+      (!invitados || Number(invitados) < 1)
+    ) {
+      setError("Indica el número de invitados que asistirán.");
+      return;
+    }
+
+    const telefono =
+      lado === "Novia"
+        ? WHATSAPP_NOVIA
+        : WHATSAPP_NOVIO;
+
+    if (telefono.includes("X")) {
+      setError(`Falta agregar el número de WhatsApp de la ${lado.toLowerCase()}.`);
       return;
     }
 
     setError("");
-    setEnviando(true);
     setEnviado(false);
+    setEnviando(true);
+    setLadoEnviando(lado);
+
+    const cantidadInvitados =
+      asistencia === "Sí asistiré"
+        ? Number(invitados)
+        : 0;
 
     const data = {
-      nombre: nombreInvitado,
+      nombre: nombreInvitado.trim(),
+      invitados: cantidadInvitados,
       asistencia,
-      invitados,
-      mensaje: mensajeInvitado,
+      mensaje: mensajeInvitado.trim(),
+      lado,
     };
 
+    const mensajeWhatsApp = [
+      "Hola, quiero confirmar mi asistencia a la boda de Fernanda y Ángel.",
+      "",
+      `Nombre: ${data.nombre}`,
+      `Asistencia: ${data.asistencia}`,
+      `Número de invitados: ${data.invitados}`,
+      `Invitado por: ${data.lado}`,
+      data.mensaje
+        ? `Mensaje: ${data.mensaje}`
+        : "",
+    ]
+      .filter(Boolean)
+      .join("\n");
+
+    const enlaceWhatsApp =
+      `https://wa.me/${telefono}?text=${encodeURIComponent(
+        mensajeWhatsApp
+      )}`;
+
     try {
-      await fetch(
-        "https://script.google.com/macros/s/AKfycbxklU9PTlqxkcu9pBUfWYhByQZ_7kJWuFENeeQhlEW-C6eh2cVbTK3z2AbMJiWVL1ME/exec",
-        {
-          method: "POST",
-          body: JSON.stringify(data),
-        }
-      );
+      await fetch(SCRIPT_URL, {
+        method: "POST",
+        mode: "no-cors",
+        headers: {
+          "Content-Type": "text/plain;charset=utf-8",
+        },
+        body: JSON.stringify(data),
+      });
 
       setEnviado(true);
+
+      setTimeout(() => {
+        window.location.href = enlaceWhatsApp;
+      }, 700);
 
       setNombreInvitado("");
       setMensajeInvitado("");
       setAsistencia("");
       setInvitados("");
-
-      setTimeout(() => {
-        setEnviado(false);
-      }, 4000);
     } catch (error) {
-      console.error("Error:", error);
-      setError("Hubo un error al enviar. Intenta nuevamente.");
+      console.error("Error al enviar la confirmación:", error);
+
+      setError(
+        "No pudimos guardar tu confirmación. Intenta nuevamente."
+      );
     } finally {
       setEnviando(false);
+      setLadoEnviando("");
     }
   };
 
   return (
-    <section className="w-full bg-[#4A141D] py-24 px-5 overflow-hidden">
+    <section
+      className="
+        w-full
+        overflow-hidden
+        bg-[#FFF9EF]
+        px-5
+        py-20
+
+        sm:px-8
+        sm:py-24
+
+        md:py-28
+      "
+    >
       <motion.div
-        initial={{ opacity: 0, y: 55 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.9, ease: "easeOut" }}
+        initial={{
+          opacity: 0,
+          y: 50,
+        }}
+        whileInView={{
+          opacity: 1,
+          y: 0,
+        }}
+        transition={{
+          duration: 0.9,
+          ease: [0.22, 1, 0.36, 1],
+        }}
         viewport={{ once: true }}
         className="
-          max-w-5xl
           mx-auto
-          bg-[#F4E8DD]
-          rounded-tl-[4rem]
-          rounded-br-[4rem]
-          rounded-tr-2xl
-          rounded-bl-2xl
-          overflow-hidden
-          shadow-[0_30px_80px_rgba(0,0,0,.35)]
+          max-w-3xl
           border
-          border-[#B88A8A]/40
+          border-[#FFF9EF]/35
+          bg-[#FFF9EF]
+          px-6
+          py-14
+          shadow-[0_28px_75px_rgba(0,0,0,0.24)]
+
+          sm:px-12
+          sm:py-16
+
+          md:px-16
+          md:py-20
         "
       >
-        <div className="grid lg:grid-cols-2">
-          <div className="relative min-h-[380px] lg:min-h-full overflow-hidden">
-            <img
-              src="/finalboda.webp"
-              alt="Confirmación de asistencia"
-              className="absolute inset-0 w-full h-full object-cover"
-            />
+        {/* ENCABEZADO */}
+        <div className="text-center">
+          <p
+            className="
+              text-xs
+              font-semibold
+              uppercase
+              tracking-[0.35em]
+              text-[#78866B]
 
-            <div className="absolute inset-0 bg-gradient-to-t from-[#4A141D]/60 via-transparent to-transparent"></div>
+              sm:text-sm
+            "
+          >
+            RSVP
+          </p>
 
-            <div className="absolute bottom-8 left-8 right-8 text-white">
-              <p className="font-cursiveDancing text-5xl">
-                ¡Te esperamos!
-              </p>
-              <div className="w-20 h-px bg-[#F4E8DD] mt-5"></div>
-            </div>
+          <h2
+            className="
+              mt-4
+              font-cursiveDancing
+              text-5xl
+              leading-tight
+              text-[#59664D]
+
+              sm:text-6xl
+              md:text-7xl
+            "
+          >
+            Confirmar asistencia
+          </h2>
+
+          <div className="my-7 flex items-center justify-center gap-4">
+            <span className="h-px w-12 bg-[#78866B]/60 sm:w-20" />
+
+            <span className="text-xl text-[#78866B]">
+              ❧
+            </span>
+
+            <span className="h-px w-12 bg-[#78866B]/60 sm:w-20" />
           </div>
 
-          <div className="px-7 py-12 sm:px-12 sm:py-16">
-            <p className="uppercase tracking-[0.35em] text-[#B88A8A] text-xs sm:text-sm font-semibold">
-              RSVP
+          <p
+            className="
+              mx-auto
+              max-w-xl
+              font-playfair
+              text-base
+              leading-8
+              text-[#59664D]/80
+
+              sm:text-lg
+            "
+          >
+            Por favor confirma tu asistencia con la persona que te
+            hizo llegar la invitación.
+          </p>
+        </div>
+
+        {/* FORMULARIO */}
+        <div className="mt-10 space-y-5">
+
+          {/* NOMBRE */}
+          <div>
+            <label
+              htmlFor="nombreInvitado"
+              className="
+                mb-2
+                block
+                text-xs
+                uppercase
+                tracking-[0.22em]
+                text-[#59664D]
+              "
+            >
+              Nombre y apellido
+            </label>
+
+            <input
+              id="nombreInvitado"
+              type="text"
+              autoComplete="name"
+              placeholder="Escribe tu nombre completo"
+              value={nombreInvitado}
+              onChange={(e) =>
+                setNombreInvitado(e.target.value)
+              }
+              className="
+                w-full
+                rounded-xl
+                border
+                border-[#78866B]/35
+                bg-white
+                px-5
+                py-4
+                text-[#59664D]
+                outline-none
+                transition
+                placeholder:text-[#59664D]/40
+                focus:border-[#78866B]
+                focus:ring-2
+                focus:ring-[#78866B]/20
+              "
+            />
+          </div>
+
+          {/* ASISTENCIA */}
+          <div>
+            <p
+              className="
+                mb-3
+                text-xs
+                uppercase
+                tracking-[0.22em]
+                text-[#59664D]
+              "
+            >
+              ¿Asistirás?
             </p>
 
-            <h2 className="font-playfair text-[#4A141D] text-4xl sm:text-5xl mt-4 leading-tight">
-              Confirmar Asistencia
-            </h2>
-
-            <p className="mt-5 text-[#4A141D]/70 leading-7">
-              Por favor confirma tu asistencia. Nos encantará compartir este día tan especial contigo.
-            </p>
-
-            <div className="w-24 h-px bg-[#B88A8A] my-8"></div>
-
-            <div className="space-y-5">
-              <input
-                type="text"
-                placeholder="Nombre y apellido"
-                value={nombreInvitado}
-                onChange={(e) => setNombreInvitado(e.target.value)}
-                className="
-                  w-full
-                  bg-white/80
+            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+              <button
+                type="button"
+                onClick={() =>
+                  setAsistencia("Sí asistiré")
+                }
+                className={`
+                  rounded-xl
                   border
-                  border-[#B88A8A]/40
-                  rounded-2xl
                   px-5
                   py-4
-                  text-[#4A141D]
-                  placeholder:text-[#4A141D]/45
-                  outline-none
-                  focus:ring-2
-                  focus:ring-[#4A141D]/40
-                "
-              />
-
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <button
-                  type="button"
-                  onClick={() => setAsistencia("Sí asistiré")}
-                  className={`
-                    py-4 rounded-2xl border transition duration-300 font-playfair
-                    ${
-                      asistencia === "Sí asistiré"
-                        ? "bg-[#4A141D] text-[#F4E8DD] border-[#4A141D]"
-                        : "bg-white/70 text-[#4A141D] border-[#B88A8A]/40 hover:bg-white"
-                    }
-                  `}
-                >
-                  Sí asistiré
-                </button>
-
-                <button
-                  type="button"
-                  onClick={() => setAsistencia("No podré asistir")}
-                  className={`
-                    py-4 rounded-2xl border transition duration-300 font-playfair
-                    ${
-                      asistencia === "No podré asistir"
-                        ? "bg-[#4A141D] text-[#F4E8DD] border-[#4A141D]"
-                        : "bg-white/70 text-[#4A141D] border-[#B88A8A]/40 hover:bg-white"
-                    }
-                  `}
-                >
-                  No asistiré
-                </button>
-              </div>
-
-              <input
-                type="number"
-                min="1"
-                placeholder="Número de invitados"
-                value={invitados}
-                onChange={(e) => setInvitados(e.target.value)}
-                className="
-                  w-full
-                  bg-white/80
-                  border
-                  border-[#B88A8A]/40
-                  rounded-2xl
-                  px-5
-                  py-4
-                  text-[#4A141D]
-                  placeholder:text-[#4A141D]/45
-                  outline-none
-                  focus:ring-2
-                  focus:ring-[#4A141D]/40
-                "
-              />
-
-              <textarea
-                placeholder="Mensaje para los novios"
-                value={mensajeInvitado}
-                onChange={(e) => setMensajeInvitado(e.target.value)}
-                rows="4"
-                className="
-                  w-full
-                  bg-white/80
-                  border
-                  border-[#B88A8A]/40
-                  rounded-2xl
-                  px-5
-                  py-4
-                  text-[#4A141D]
-                  placeholder:text-[#4A141D]/45
-                  outline-none
-                  resize-none
-                  focus:ring-2
-                  focus:ring-[#4A141D]/40
-                "
-              />
-
-              {error && (
-                <p className="text-[#4A141D] bg-[#B88A8A]/20 border border-[#B88A8A]/40 rounded-xl px-4 py-3 text-sm">
-                  {error}
-                </p>
-              )}
-
-              {enviado && (
-                <p className="text-[#4A141D] bg-white/70 border border-[#B88A8A]/40 rounded-xl px-4 py-3 text-sm">
-                  Confirmación enviada correctamente.
-                </p>
-              )}
+                  font-playfair
+                  transition
+                  duration-300
+                  ${
+                    asistencia === "Sí asistiré"
+                      ? "border-[#59664D] bg-[#59664D] text-white"
+                      : "border-[#78866B]/35 bg-white text-[#59664D] hover:border-[#78866B]"
+                  }
+                `}
+              >
+                Sí asistiré
+              </button>
 
               <button
                 type="button"
-                onClick={enviarConfirmacion}
-                disabled={enviando}
-                className="
-                  w-full
-                  bg-[#4A141D]
-                  text-[#F4E8DD]
+                onClick={() => {
+                  setAsistencia("No podré asistir");
+                  setInvitados("");
+                }}
+                className={`
+                  rounded-xl
+                  border
+                  px-5
                   py-4
-                  rounded-full
                   font-playfair
-                  text-lg
-                  shadow-[0_18px_40px_rgba(74,20,29,.35)]
-                  hover:bg-[#6B1F2A]
-                  hover:scale-[1.02]
                   transition
                   duration-300
-                  disabled:opacity-60
-                  disabled:cursor-not-allowed
-                "
+                  ${
+                    asistencia === "No podré asistir"
+                      ? "border-[#59664D] bg-[#59664D] text-white"
+                      : "border-[#78866B]/35 bg-white text-[#59664D] hover:border-[#78866B]"
+                  }
+                `}
               >
-                {enviando ? "Enviando..." : "Enviar Confirmación"}
+                No asistiré
               </button>
             </div>
+          </div>
+
+          {/* NÚMERO DE INVITADOS */}
+          <div>
+            <label
+              htmlFor="numeroInvitados"
+              className="
+                mb-2
+                block
+                text-xs
+                uppercase
+                tracking-[0.22em]
+                text-[#59664D]
+              "
+            >
+              Número de invitados
+            </label>
+
+            <input
+              id="numeroInvitados"
+              type="number"
+              min="1"
+              inputMode="numeric"
+              placeholder={
+                asistencia === "No podré asistir"
+                  ? "No aplica"
+                  : "¿Cuántas personas asistirán?"
+              }
+              value={invitados}
+              disabled={asistencia === "No podré asistir"}
+              onChange={(e) =>
+                setInvitados(e.target.value)
+              }
+              className="
+                w-full
+                rounded-xl
+                border
+                border-[#78866B]/35
+                bg-white
+                px-5
+                py-4
+                text-[#59664D]
+                outline-none
+                transition
+                placeholder:text-[#59664D]/40
+                focus:border-[#78866B]
+                focus:ring-2
+                focus:ring-[#78866B]/20
+                disabled:cursor-not-allowed
+                disabled:bg-[#EEE9DE]
+                disabled:opacity-70
+              "
+            />
+          </div>
+
+          {/* MENSAJE */}
+          <div>
+            <label
+              htmlFor="mensajeInvitado"
+              className="
+                mb-2
+                block
+                text-xs
+                uppercase
+                tracking-[0.22em]
+                text-[#59664D]
+              "
+            >
+              Mensaje para los novios
+            </label>
+
+            <textarea
+              id="mensajeInvitado"
+              placeholder="Escribe un mensaje especial"
+              value={mensajeInvitado}
+              onChange={(e) =>
+                setMensajeInvitado(e.target.value)
+              }
+              rows="4"
+              className="
+                w-full
+                resize-none
+                rounded-xl
+                border
+                border-[#78866B]/35
+                bg-white
+                px-5
+                py-4
+                text-[#59664D]
+                outline-none
+                transition
+                placeholder:text-[#59664D]/40
+                focus:border-[#78866B]
+                focus:ring-2
+                focus:ring-[#78866B]/20
+              "
+            />
+          </div>
+
+          {/* ERROR */}
+          {error && (
+            <p
+              role="alert"
+              className="
+                rounded-xl
+                border
+                border-[#F26F5B]/35
+                bg-[#F26F5B]/10
+                px-4
+                py-3
+                text-sm
+                leading-6
+                text-[#59664D]
+              "
+            >
+              {error}
+            </p>
+          )}
+
+          {/* MENSAJE ENVIADO */}
+          {enviado && (
+            <p
+              className="
+                rounded-xl
+                border
+                border-[#78866B]/35
+                bg-[#78866B]/10
+                px-4
+                py-3
+                text-center
+                text-sm
+                text-[#59664D]
+              "
+            >
+              Confirmación guardada. Abriendo WhatsApp…
+            </p>
+          )}
+
+          {/* BOTONES DE WHATSAPP */}
+          <div
+            className="
+              grid
+              grid-cols-1
+              gap-4
+              pt-3
+
+              sm:grid-cols-2
+            "
+          >
+            <button
+              type="button"
+              onClick={() =>
+                enviarConfirmacion("Novia")
+              }
+              disabled={enviando}
+              className="
+                flex
+                min-h-[58px]
+                items-center
+                justify-center
+                rounded-full
+                bg-[#59664D]
+                px-6
+                py-4
+                text-center
+                font-playfair
+                text-base
+                text-white
+                shadow-[0_14px_30px_rgba(89,102,77,0.25)]
+                transition
+                duration-300
+                hover:-translate-y-1
+                hover:bg-[#4B5742]
+                disabled:cursor-not-allowed
+                disabled:opacity-60
+              "
+            >
+              {enviando && ladoEnviando === "Novia"
+                ? "Enviando..."
+                : "Confirmar con la novia"}
+            </button>
+
+            <button
+              type="button"
+              onClick={() =>
+                enviarConfirmacion("Novio")
+              }
+              disabled={enviando}
+              className="
+                flex
+                min-h-[58px]
+                items-center
+                justify-center
+                rounded-full
+                bg-[#F26F5B]
+                px-6
+                py-4
+                text-center
+                font-playfair
+                text-base
+                text-white
+                shadow-[0_14px_30px_rgba(242,111,91,0.25)]
+                transition
+                duration-300
+                hover:-translate-y-1
+                hover:bg-[#DF604E]
+                disabled:cursor-not-allowed
+                disabled:opacity-60
+              "
+            >
+              {enviando && ladoEnviando === "Novio"
+                ? "Enviando..."
+                : "Confirmar con el novio"}
+            </button>
           </div>
         </div>
       </motion.div>

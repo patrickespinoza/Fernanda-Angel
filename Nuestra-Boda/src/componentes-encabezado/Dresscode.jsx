@@ -85,7 +85,7 @@ const Vestimenta = () => {
 
             -left-2
             -top-1
-            w-[215px]
+            w-[170px]
             opacity-80
 
             sm:-left-16
@@ -135,7 +135,7 @@ const Vestimenta = () => {
 
             -bottom-8
             -right-2
-            w-[210px]
+            w-[150px]
             opacity-80
 
             sm:-bottom-20

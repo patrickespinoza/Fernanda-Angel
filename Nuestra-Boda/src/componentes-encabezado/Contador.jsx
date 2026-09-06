@@ -81,7 +81,7 @@ const Contador = ({
 
           -left-5
           -top-1
-          w-[210px]
+          w-[160px]
           opacity-75
 
           sm:-left-20
@@ -125,7 +125,7 @@ const Contador = ({
 
           -right-5
           -top-1
-          w-[210px]
+          w-[180px]
           opacity-75
 
           sm:-right-20

@@ -7,6 +7,7 @@ import Regalos from "./componentes-encabezado/Regalos";
 import Confirmacion from "./componentes-encabezado/Confirmacion";
 import Musica from "./componentes-encabezado/musica";
 import FotoSeparacion from "./componentes-encabezado/Fotoseparacion";
+import Final from "./componentes-encabezado/final";
 
 export default function Intinerario() {
   return (
@@ -29,6 +30,8 @@ export default function Intinerario() {
       <Regalos />
 
       <Confirmacion />
+
+      <Final/>
     </div>
   );
 }
